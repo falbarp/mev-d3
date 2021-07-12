@@ -15,24 +15,21 @@ function drawMap(featureCollection) {
         .attr('height', height)
         .append('g');
 
-    var center = d3.geoCentroid(featureCollection); //Encontrar la coordenada central del mapa (de la featureCollection)
-    //var center_area = d3.geoCentroid(featureCollection.features[0]); //Encontrar la coordenada central de un area. (de un feature)
-
+    var center = d3.geoCentroid(featureCollection); //Finds central cordinates
     console.log(center)
 
     //to translate geo coordinates[long,lat] into X,Y coordinates.
     var projection = d3.geoMercator()
-        .fitSize([width, height], featureCollection) // equivalente a  .fitExtent([[0, 0], [width, height]], featureCollection)
+        .fitSize([width, height], featureCollection)
         //.scale(1000)
-        //Si quiero centrar el mapa en otro centro que no sea el devuelto por fitSize.
-        .center(center) //centrar el mapa en una long,lat determinada
-        .translate([width / 2, height / 2]) //centrar el mapa en una posicion x,y determinada
+        .center(center) 
+        .translate([width / 2, height / 2]) //Centers map
 
     //console.log(projection([long,lat]))
 
-    //Para crear paths a partir de una proyección 
+    //Creates a path with a projection
     var pathProjection = d3.geoPath().projection(projection);
-    //console.log(pathProjection(featureCollection.features[0]))
+
     var features = featureCollection.features;
 
     var createdPath = svg.selectAll('path')
@@ -56,7 +53,7 @@ function drawMap(featureCollection) {
 
 
 
-    //Creacion de una leyenda
+    //Legend 
     var nblegend = 10;
     var widthRect = (width / nblegend) - 2;
     var heightRect = 10;
@@ -73,7 +70,7 @@ function drawMap(featureCollection) {
         .append("rect")
         .attr("width", widthRect)
         .attr("height", heightRect)
-        .attr("x", (d, i) => scaleLegend(i)) // o (i * (widthRect + 2)) //No haria falta scaleLegend
+        .attr("x", (d, i) => scaleLegend(i)) 
         .attr("fill", (d) => d);
 
     var text_legend = svg.append("g")
@@ -81,7 +78,7 @@ function drawMap(featureCollection) {
         .data(d3.schemeTableau10)
         .enter()
         .append("text")
-        .attr("x", (d, i) => scaleLegend(i)) // o (i * (widthRect + 2))
+        .attr("x", (d, i) => scaleLegend(i)) 
         .attr("y", heightRect * 2.5)
         .text((d) => d)
         .attr("font-size", 12)
