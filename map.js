@@ -45,11 +45,12 @@ function drawMap(featureCollection) {
     createdPath.on('click', function(event, d) {
         d.opacity = d.opacity ? 0 : 1;
         d3.select(this).attr('opacity', d.opacity);
-        console.log(d.properties.name);
+        console.log(d.properties.name)
+        console.log(d.properties.avgprice);
     })
 
-    var scaleColor = d3.scaleOrdinal(d3.schemeTableau10);
-    createdPath.attr('fill', (d) => scaleColor(d.properties.name));
+    var scaleColor = d3.scaleLinear().domain([0,150]).range(["white", "blue"]); //TODO: Unhard-code 150
+    createdPath.attr('fill', (d) => scaleColor(d.properties.avgprice)); //Sets average price
 
 
 
@@ -59,27 +60,27 @@ function drawMap(featureCollection) {
     var heightRect = 10;
 
     var scaleLegend = d3.scaleLinear()
-        .domain([0, nblegend])
+        .domain([0, 10])
         .range([0, width]);
 
 
     var legend = svg.append("g")
         .selectAll("rect")
-        .data(d3.schemeTableau10)
+        .data(features)
         .enter()
         .append("rect")
         .attr("width", widthRect)
         .attr("height", heightRect)
         .attr("x", (d, i) => scaleLegend(i)) 
-        .attr("fill", (d) => d);
+        .attr("fill", (d) =>  scaleColor(d.properties.avgprice));
 
     var text_legend = svg.append("g")
         .selectAll("text")
-        .data(d3.schemeTableau10)
+        .data(features)
         .enter()
         .append("text")
         .attr("x", (d, i) => scaleLegend(i)) 
         .attr("y", heightRect * 2.5)
-        .text((d) => d)
+        .text((d) => (d.properties.avgprice)) // <==
         .attr("font-size", 12)
 }
